@@ -23,7 +23,7 @@ class winlogbeat::params {
 
   case $::kernel {
     'Windows' : {
-      $package_ensure   = '5.4.3'
+      $package_ensure   = '6.2.3'
       $config_file      = 'C:/Program Files/Winlogbeat/winlogbeat.yml'
       $registry_file    = 'C:/ProgramData/winlogbeat/.winlogbeat.yml'
       $install_dir      = 'C:/Program Files'
