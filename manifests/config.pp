@@ -7,7 +7,7 @@ class winlogbeat::config {
     'fields'            => $winlogbeat::fields,
     'fields_under_root' => $winlogbeat::fields_under_root,
     'winlogbeat'        => {
-      'registry_file' => $winlogbeat::registry_file,
+      'registry_file' => $winlogbeat::real_registry_file,
       'metrics'       => $winlogbeat::metrics,
       'event_logs'    => $winlogbeat::event_logs_final,
     },
@@ -23,7 +23,7 @@ class winlogbeat::config {
       $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
       file {'winlogbeat.yml':
         ensure       => file,
-        path         => $winlogbeat::config_file,
+        path         => $winlogbeat::real_config_file,
         content      => template($winlogbeat::real_conf_template),
         validate_cmd => "\"${winlogbeat_path}\" -N -configtest -c \"%\"",
         notify       => Service['winlogbeat'],

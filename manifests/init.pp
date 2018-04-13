@@ -28,12 +28,15 @@
 
 class winlogbeat (
   $major_version        = undef,
+  $use_chocolatey       = $winlogbeat::params::use_chocolatey,
   $package_ensure       = $winlogbeat::params::package_ensure,
+  $package_name         = $winlogbeat::params::package_name,
+  $package_source       = $winlogbeat::params::package_source,
   $service_ensure       = $winlogbeat::params::service_ensure,
   $service_enable       = $winlogbeat::params::service_enable,
   $service_provider     = $winlogbeat::params::service_provider,
-  $registry_file        = $winlogbeat::params::registry_file,
-  $config_file          = $winlogbeat::params::config_file,
+  $registry_file        = undef,
+  $config_file          = undef,
   $outputs              = $winlogbeat::params::outputs,
   $shipper              = $winlogbeat::params::shipper,
   $logging              = $winlogbeat::params::logging,
@@ -104,12 +107,40 @@ class winlogbeat (
     $event_logs_final = $event_logs
   }
 
-  if $config_file != $winlogbeat::params::config_file {
+  if $use_chocolatey {
+    $default_config_file = $winlogbeat::params::ch_config_file
+  }
+  else {
+    $default_config_file = $winlogbeat::params::dl_config_file
+  }
+
+  if $config_file == undef {
+    $real_config_file = $default_config_file
+  }
+  else {
+    $real_config_file = $default_config_file
+  }
+
+  if $config_file != $default_config_file {
     warning('You\'ve specified a non-standard config_file location - winlogbeat may fail to start unless you\'re doing something to fix this')
   }
 
+  if $use_chocolatey {
+    $default_registry_file = $winlogbeat::params::ch_registry_file
+  }
+  else {
+    $default_registry_file = $winlogbeat::params::dl_registry_file
+  }
+
+  if $registry_file == undef {
+    $real_registry_file = $default_registry_file
+  }
+  else {
+    $real_registry_file = $default_registry_file
+  }
+
   validate_hash($outputs, $logging, $event_logs_final)
-  validate_string($registry_file, $package_ensure)
+  validate_string($real_registry_file, $package_ensure)
 
   if(!empty($proxy_address)){
     validate_re($proxy_address, ['^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$'], 'ERROR: You must enter a proxy url in a valid format i.e. http://proxy.net:3128')
