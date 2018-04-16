@@ -32,6 +32,7 @@ class winlogbeat (
   $package_ensure       = $winlogbeat::params::package_ensure,
   $package_name         = $winlogbeat::params::package_name,
   $package_source       = $winlogbeat::params::package_source,
+  $package_version      = $winlogbeat::params::package_version,
   $service_ensure       = $winlogbeat::params::service_ensure,
   $service_enable       = $winlogbeat::params::service_enable,
   $service_provider     = $winlogbeat::params::service_provider,
@@ -108,10 +109,10 @@ class winlogbeat (
   }
 
   if $use_chocolatey {
-    $default_config_file = $winlogbeat::params::ch_config_file
+    $default_config_file = "C:/ProgramData/chocolatey/lib/winlogbeat/tools/winlogbeat-${package_version}-windows-x86_64/winlogbeat.yml"
   }
   else {
-    $default_config_file = $winlogbeat::params::dl_config_file
+    $default_config_file = 'C:/Program Files/Winlogbeat/winlogbeat.yml'
   }
 
   if $config_file == undef {
@@ -126,10 +127,10 @@ class winlogbeat (
   }
 
   if $use_chocolatey {
-    $default_registry_file = $winlogbeat::params::ch_registry_file
+    $default_registry_file = "C:/ProgramData/chocolatey/lib/winlogbeat/tools/winlogbeat-${package_version}-windows-x86_64/.winlogbeat.yml"
   }
   else {
-    $default_registry_file = $winlogbeat::params::dl_registry_file
+    $default_registry_file = 'C:/ProgramData/winlogbeat/.winlogbeat.yml'
   }
 
   if $registry_file == undef {
