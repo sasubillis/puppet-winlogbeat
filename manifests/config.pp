@@ -19,8 +19,13 @@ class winlogbeat::config {
 
   case $::kernel {
     'Windows' : {
-      $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
-      $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
+      if $winlogbeat::use_chocolatey {
+        $winlogbeat_path = 'C:\\ProgramData\\chocolatey\\bin\\winlogbeat.exe'
+      }
+      else {
+        $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
+        $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
+      }
       file {'winlogbeat.yml':
         ensure       => file,
         path         => $winlogbeat::real_config_file,
