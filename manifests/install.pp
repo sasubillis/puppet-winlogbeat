@@ -68,7 +68,7 @@ class winlogbeat::install {
   }
 
   exec { "create service entry ${filename}":
-    command => "-NonInteractive -NoProfile -ExecutionPolicy Bypass -NoLogo -Command New-Service -name filebeat -displayName Filebeat -binaryPathName '\"C:\Program Files\Filebeat\Filebeat.exe\" -c \"C:\Program Files\Filebeat\filebeat.yml\" -path.home \"C:\Program Files\Filebeat\" -path.data \"C:\ProgramData\filebeat\" -path.logs \"C:\ProgramData\filebeat\logs\"'",
+    command => "-NonInteractive -NoProfile -ExecutionPolicy Bypass -NoLogo -Command  New-Service -name winlogbeat -displayName Winlogbeat  -binaryPathName '\"C:\Program Files\Winlogbeat\winlogbeat.exe\" -c \"C:\Program Files\Winlogbeat\winlogbeat.yml\" -path.home \"C:\Program Files\Winlogbeat\" -path.data \"C:\ProgramData\winlogbeat\" -path.logs \"C:\ProgramData\winlogbeat\logs\"'",
   }
   
   exec { "install ${filename}":
