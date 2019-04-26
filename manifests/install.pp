@@ -67,10 +67,15 @@ class winlogbeat::install {
     require => Exec["rename ${filename}"],
   }
 
+  exec { "create service entry ${filename}":
+    command => "-NonInteractive -NoProfile -ExecutionPolicy Bypass -NoLogo -Command New-Service -name filebeat -displayName Filebeat -binaryPathName '\"C:\Program Files\Filebeat\Filebeat.exe\" -c \"C:\Program Files\Filebeat\filebeat.yml\" -path.home \"C:\Program Files\Filebeat\" -path.data \"C:\ProgramData\filebeat\" -path.logs \"C:\ProgramData\filebeat\logs\"'",
+  }
+  
   exec { "install ${filename}":
     cwd         => $install_folder,
     command     => './install-service-winlogbeat.ps1',
     refreshonly => true,
-    subscribe   => Exec["mark ${filename}"],
+    subscribe   => [ Exec["mark ${filename}", Exec["create service entry ${filename}"],
   }
+  
 }
