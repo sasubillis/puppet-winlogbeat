@@ -68,14 +68,14 @@ class winlogbeat::install {
   }
 
   exec { "create service entry ${filename}":
-    command => "-NonInteractive -NoProfile -ExecutionPolicy Bypass -NoLogo -Command  New-Service -name winlogbeat -displayName Winlogbeat  -binaryPathName '\"C:\Program Files\Winlogbeat\winlogbeat.exe\" -c \"C:\Program Files\Winlogbeat\winlogbeat.yml\" -path.home \"C:\Program Files\Winlogbeat\" -path.data \"C:\ProgramData\winlogbeat\" -path.logs \"C:\ProgramData\winlogbeat\logs\"'",
+    command => "New-Service -Name winlogbeat -displayName Winlogbeat  -binaryPathName '\"C:\Program Files\Winlogbeat\winlogbeat.exe\" -c \"C:\Program Files\Winlogbeat\winlogbeat.yml\" -path.home \"C:\Program Files\Winlogbeat\" -path.data \"C:\ProgramData\winlogbeat\" -path.logs \"C:\ProgramData\winlogbeat\logs\"'",
   }
   
   exec { "install ${filename}":
     cwd         => $install_folder,
     command     => './install-service-winlogbeat.ps1',
     refreshonly => true,
-    subscribe   => [ Exec["mark ${filename}"], Exec["create service entry ${filename}"] ],
+    subscribe   => [ Exec["create service entry ${filename}"], Exec["mark ${filename}"] ],
   }
   
 }
