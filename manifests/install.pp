@@ -75,7 +75,7 @@ class winlogbeat::install {
     cwd         => $install_folder,
     command     => './install-service-winlogbeat.ps1',
     refreshonly => true,
-    subscribe   => [ Exec["mark ${filename}", Exec["create service entry ${filename}"],
+    subscribe   => [ Exec["mark ${filename}"], Exec["create service entry ${filename}"] ],
   }
   
 }
