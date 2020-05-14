@@ -24,27 +24,18 @@ class winlogbeat::install {
   # However, this requires 7zip, which archive can install via chocolatey:
   # https://github.com/voxpupuli/puppet-archive/blob/master/manifests/init.pp#L31
   # I'm not choosing to impose those dependencies on anyone at this time...
+  #
+  # Chris L - no need to worry about 7zip, puppet forge says that as long as the archive
+  # is a zip file, it will use powershell via .net methods for extraction (for windows server 2012 +). 
+  #   Ref :https://forge.puppet.com/puppet/archive#setup 
   archive { $zip_file:
     source       => $winlogbeat::real_download_url,
-    cleanup      => false,
+    cleanup      => true,
     creates      => $version_file,
     proxy_server => $winlogbeat::proxy_address,
-  }
-
-  exec { "unzip ${filename}":
-    command => "\$sh=New-Object -COM Shell.Application;\$sh.namespace((Convert-Path '${winlogbeat::install_dir}')).Copyhere(\$sh.namespace((Convert-Path '${zip_file}')).items(), 16)",
-    creates => $version_file,
-    require => [
-      File[$winlogbeat::install_dir],
-      Archive[$zip_file],
-    ],
-  }
-
-  # Clean up after ourselves
-  file { $zip_file:
-    ensure  => absent,
-    backup  => false,
-    require => Exec["unzip ${filename}"],
+    require      => File[$winlogbeat::install_dir],
+    extract      => true,
+    extract_path => $winlogbeat::install_dir,
   }
 
   # You can't remove the old dir while the service has files locked...
@@ -52,7 +43,7 @@ class winlogbeat::install {
     command => 'Set-Service -Name winlogbeat -Status Stopped',
     creates => $version_file,
     onlyif  => 'if(Get-WmiObject -Class Win32_Service -Filter "Name=\'winlogbeat\'") {exit 0} else {exit 1}',
-    require => Exec["unzip ${filename}"],
+    require => Archive[$zip_file],
   }
 
   exec { "rename ${filename}":
