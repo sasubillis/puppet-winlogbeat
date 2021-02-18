@@ -61,9 +61,9 @@ class winlogbeat (
 
   if $major_version == undef and getvar('::winlogbeat_version') == undef {
     $real_version = '5'
-  } elsif $major_version == undef and versioncmp($::winlogbeat_version, '6.0.0') >= 0 {
-    $real_version = '6'
   } elsif $major_version == undef and versioncmp($::winlogbeat_version, '7.0.0') >= 0 {
+    $real_version = '6'
+  } elsif $major_version == undef and versioncmp($::winlogbeat_version, '6.0.0') >= 0 {
     $real_version = '6'
   } elsif $major_version == undef and versioncmp($::winlogbeat_version, '5.0.0') >= 0 {
     $real_version = '5'
