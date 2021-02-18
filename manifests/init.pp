@@ -71,27 +71,24 @@ class winlogbeat (
     $real_version = $major_version
   }
 
+  
   if $conf_template != undef {
     $real_conf_template = $conf_template
   } elsif $real_version == '1' {
-    if versioncmp('1.9.1', $::rubyversion) > 0 {
+    if versioncmp('1.9.1', $facts['ruby']['version']) > 0 {
       $real_conf_template = "${module_name}/winlogbeat1.yml.ruby18.erb"
     } else {
       $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
     }
-  } elsif $real_version == '5' {
-    if $use_generic_template {
-      $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
-    } else {
-      $real_conf_template = "${module_name}/winlogbeat5.yml.erb"
-    }
-  } elsif $real_version == '6' {
+  } elsif $real_version == '5' or $real_version == '6' or $real_version == '7' {
     if $use_generic_template {
       $real_conf_template = "${module_name}/winlogbeat1.yml.erb"
     } else {
       $real_conf_template = "${module_name}/winlogbeat6.yml.erb"
     }
   }
+  
+  
 
   $real_download_url = $download_url ? {
     undef   => "https://artifacts.elastic.co/downloads/beats/winlogbeat/winlogbeat-${package_ensure}-windows-${winlogbeat::params::url_arch}.zip",
