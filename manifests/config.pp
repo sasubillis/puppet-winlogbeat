@@ -21,10 +21,9 @@ class winlogbeat::config {
     'Windows' : {
       $cmd_install_dir = regsubst($winlogbeat::install_dir, '/', '\\', 'G')
       $winlogbeat_path = join([$cmd_install_dir, 'Winlogbeat', 'winlogbeat.exe'], '\\')
-      if $winlogbeat::major_version == '6' or $winlogbeat::real_version == '6' {
+      if versioncmp($winlogbeat::real_version, '6') >= 0 {
         $test_cmd = 'test config'
-      }
-      else {
+      } else {
         $test_cmd = '-N -configtest'
       }
       file {'winlogbeat.yml':
